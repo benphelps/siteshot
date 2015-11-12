@@ -4,6 +4,9 @@
   "description": "A simple tool to fetch an image of a website.",
   "main": "app.js",
   "author": "Ben Phelps <ben@phelps.io>",
+  "engines": {
+    "node": "4.1.1"
+  },
   "dependencies": {
     "easyimage": "^2.1.0",
     "express": "~3.2.4",
