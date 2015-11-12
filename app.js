@@ -11,11 +11,10 @@ phantom.create("--web-security=no", "--ignore-ssl-errors=yes", { port: 12345 }, 
     _ph = ph;
 });
 
-app.get(/(.*)/, function (req, res) {
-
+function fetchImage(res, url, small) {
   var date = new Date();
   var current_hour = date.getHours();
-  var url = req.params[0].substring(1);
+
 
   if (url == "") {
     res.send('Usage: https://shot.alt.bz/<FULL URL> <br/><a href="https://shot.alt.bz/http://google.com/">https://shot.alt.bz/http://google.com/</a>')
@@ -53,10 +52,19 @@ app.get(/(.*)/, function (req, res) {
                           console.log(err);
                         }
                       );
-                      fs.readFile(path, function(err, data){
-                        res.writeHead(200, {'Content-Type': 'image/png' });
-                        res.end(data, 'binary');
-                      });
+                      if (small) {
+                        fs.readFile(path_small, function(err, data){
+                          res.writeHead(200, {'Content-Type': 'image/png' });
+                          res.end(data, 'binary');
+                        });
+                      }
+                      else {
+                        fs.readFile(path, function(err, data){
+                          res.writeHead(200, {'Content-Type': 'image/png' });
+                          res.end(data, 'binary');
+                        });
+                      }
+
                     }, 5000);
                   }
                 }
@@ -66,18 +74,32 @@ app.get(/(.*)/, function (req, res) {
         });
       } else {
         console.log('Cache Hit: ' + url);
-        var img = fs.readFileSync(path);
-        res.writeHead(200, {'Content-Type': 'image/png' });
-        res.end(img, 'binary');
+        if (small) {
+          var img = fs.readFileSync(path_small);
+          res.writeHead(200, {'Content-Type': 'image/png' });
+          res.end(img, 'binary');
+        }
+        else {
+          var img = fs.readFileSync(path);
+          res.writeHead(200, {'Content-Type': 'image/png' });
+          res.end(img, 'binary');
+        }
+
       }
     });
-
   }
+}
 
+app.get(/small\/(.*)/, function (req, res) {
+  var url = req.params[0];
+  var small = true;
+  fetchImage(res, url, small);
+});
 
-
-
-
+app.get(/(.*)/, function (req, res) {
+  var url = req.params[0].substring(1);
+  var small = false;
+  fetchImage(res, url, small);
 });
 
 var server = app.listen(process.env.PORT, function () {
