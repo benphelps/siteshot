@@ -10,9 +10,6 @@
   "dependencies": {
     "easyimage": "^2.1.0",
     "express": "~3.2.4",
-    "gulp": "~3.9.0",
-    "gulp-image-resize": "~0.7.1",
-    "gulp-rename": "^1.2.2",
     "phantom": "~0.8.3",
     "phantomjs": "~1.9.18",
     "sharp": "~0.11.4"
